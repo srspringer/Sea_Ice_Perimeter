@@ -1,1 +1,2 @@
-## Sea Ice Perimeter: matlab code for extracting and analyzing a contour of sea ice concentration
+## Sea ice around Antarctica plays an important role in climate
+
