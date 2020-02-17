@@ -40,7 +40,7 @@ Choose the [data_type], which corresponds to the satellite data source.  There a
 
 These scripts were used to extract the primary ice edge from all four data sets with `smooth_scale=500` and `max_gap=100`. 
 
-The output files are stored temporarily in the **Data** directory of this repository.  When a manuscript describing these results is accepted by a scientific journal, the corresponding files will be moved to a permanent archive.
+The output files are stored at from the sample run are archived at [Zenodo](https://zenodo.org/record/3669406#.XkoALy2ZOuo)
 
 ### References
 

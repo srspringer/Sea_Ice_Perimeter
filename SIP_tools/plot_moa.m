@@ -14,7 +14,7 @@ function plot_moa(dotsize,dotcolor,SLAT,SLON,HEMI);
 %
 %=========================================================================
 
-load MOA_GL.mat
+load ../Data/MOA_GL.mat
 %load H:\Projects\MODIS_MOA\GL_files\MOA_GL.mat
 
 if(nargin==2);  % Plotting on lat/lon

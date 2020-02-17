@@ -31,7 +31,7 @@ if exist(fname)
 
    DATA.seaice=ice_concentration'; DATA.X=x2d';    DATA.Y=y2d';
 
-   load('asi_625km_mask.mat','mask_asi');
+   load('../Data/asi_625km_mask.mat','mask_asi');
    DATA.seaice(mask_asi)=NaN; 
 
 end

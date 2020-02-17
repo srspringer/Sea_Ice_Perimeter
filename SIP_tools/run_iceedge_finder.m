@@ -89,7 +89,7 @@ for i=1:length(SDtime)
     end
 end
 
-data_dir=[data_dir_root,'IceEdge/data_',META.data_type,'/'];
+data_dir=[data_dir_root,'../Data/data_',META.data_type,'/'];
 META.data_file = fullfile(data_dir,[META.data_type,'_iceedge','_f',num2str(META.filtlen),'_c',num2str(META.concentration),'.mat'])
 save(META.data_file,'AE','META');
 
