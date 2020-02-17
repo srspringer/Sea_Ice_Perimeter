@@ -10,7 +10,7 @@
 
 This repository holds a collection of *Matlab* scripts developed to extract the outermost edge of the sea ice ("the primary ice edge") from satellite-observed sea ice concentration.  
 
-Methodology
+### Methodology
 
 Given a two-dimensional map of ice concentration, $C(x,y)$, we define the ice edge to be given by a low concentration value, typically $C_0=15\%$.  The question is how to invert the field to get $(X(C=C_0), Y(C=C_0))$, the spatial position of the corresponding edge.
 
