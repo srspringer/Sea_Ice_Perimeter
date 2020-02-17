@@ -1,12 +1,8 @@
-function [pie_time, pie_raw_loess, pie_smooth_loess] =  ...
-      plot_iceedge_finder(data_type,filter_len,plots);
+function plot_iceedge_finder(META,plots);
 
 %warning('off');
 
-data_root= '/net/esrdata1/springer/data/IceEdge/';
-data_file=['data_',data_type,'/',data_type,'_iceedge','_f', ...
-            num2str(filter_len),'.mat'];
-load(fullfile(data_root,data_file));
+load(META.data_file);
 
 AE_length=length(AE);
 nsect=NaN*ones(length(AE),1); int_dd=nsect; int_ddsm=nsect;
@@ -18,13 +14,11 @@ for i=1:length(AE)
       int_dd(i) = AE(i).rawlen;
    end
 end
-year_start = datestr(AE(1).SDtime,10);
-year_stop = datestr(AE(end).SDtime,10);
 
 % limits of domain for figures
 ax=[-3300 4100 -3250 4250];
 
-fig_root_dir = '~/iceedge_figures';
+fig_root_dir = '~/figures/iceedge_figures';
 fig_dir = fullfile(fig_root_dir,META.data_type);
 
 ycolors = [0  0.4470    0.7410; ...
@@ -87,8 +81,7 @@ day_max_pie=266;
 pmonth=zeros(10,1);
 pyear=zeros(10,1);
 %for i=1:length(AE)
-%for i=1:AE_length
-for i=1:0
+for i=1:AE_length
         if (AE(i).SDtime==figure_10_time & plots & 0)
            %for irad = 1:3
            %   rmax = 1000*irad; xx = [-rmax:rmax/100:rmax];
@@ -110,7 +103,7 @@ for i=1:0
            set(p1,'linewidth',8);
            set(p2,'linewidth',8);
         end
-        if (rem(AE(i).SDtime-datenum('1-1-2002'),365)==day_max_pie) & data_type~='5km5d' & plots
+        if (rem(AE(i).SDtime-datenum('1-1-2002'),365)==day_max_pie) & META.data_type~='5km5d' & plots
            imax=imax+1;
            figure(11);
            pyear(imax)=plot(AE(i).x,AE(i).y,'color',ycolors(imax,:),'linewidth',2);
@@ -121,18 +114,18 @@ for i=1:0
         end
         %if (rem(AE(i).SDtime-datenum('1-1-2002'),365)==any([104 134 165 195 226 257 287])
         if any(AE(i).SDtime-datenum('1-1-2010')==[104 134 165 195 226 257 287]) & plots
-           imonth=imonth+1
+           imonth=imonth+1;
            figure(13); hold on
            %pmonth(imonth,1)=plot(AE(i).x,AE(i).y,'color',lcolors(end-imonth+1,:),'linewidth',2);
-           pmonth=plot(AE(i).x,AE(i).y,'color',lcolors(end-imonth+1,:),'linewidth',2)
+           pmonth=plot(AE(i).x,AE(i).y,'color',lcolors(end-imonth+1,:),'linewidth',2);
         end
 end
 
 if plots
 
-if data_type ~='5km5d'
+if META.data_type ~='5km5d'
 figure(10);
-t1=title([META.data_type,' 15% ice edge for ' datestr(figure_10_time)]);
+t1=title([META.data_type,' ',num2str(META.concentration),'% ice edge for ' datestr(figure_10_time)]);
 x1=xlabel('X (km)');
 y1=ylabel('Y (km)');
 set([gca t1 x1 y1],'fontsize',14,'fontname','helvetica','fontweight','demi');
@@ -145,21 +138,21 @@ axis([-3250 -2250 -1000 500]);
 print(fullfile(fig_dir,'iceedge_closeup_image.pdf'),'-dpdf');
 
 figure(11);
-%t1=title([META.data_type,' 15% ice edge for ' datestr(SDtime(i))]);
+%t1=title([META.data_type,' ',num2str(META.concentration),'% ice edge for ' datestr(SDtime(i))]);
 x1=xlabel('X (km)');
 y1=ylabel('Y (km)');
 set([gca t1 x1 y1],'fontsize',14,'fontname','helvetica','fontweight','demi');
 plot(0,0,'kx','markersize',8);
 text(0+100,0,'South Pole');
-if data_type == 'AMSRE' | data_type=='AMSEB'
+if META.data_type == 'AMSRE' | META.data_type=='AMSEB'
 legend(pyear,'2002','2003','2004','2005','2006','2007','2008','2009','2010','2011');
-elseif data_type == 'AMSR2'
+elseif META.data_type == 'AMSR2'
 %legend(pyear,'2012','2013','2014','2015','2016','2017','2018');
 end
 print(fullfile(fig_dir,'interannual_max_iceedge.png'),'-dpng');
 
 figure(12);
-%t1=title([META.data_type,' 15% ice edge for ' datestr(SDtime(i))]);
+%t1=title([META.data_type,' ',num2str(META.concentration),'% ice edge for ' datestr(SDtime(i))]);
 x1=xlabel('X (km)');
 y1=ylabel('Y (km)');
 set([gca t1 x1 y1],'fontsize',14,'fontname','helvetica','fontweight','demi');
@@ -183,11 +176,11 @@ print(fullfile(fig_dir,'annual_iceedge.png'),'-dpng');
 
 
 figure(13);
-%t1=title([META.data_type,' 15% ice edge for ' datestr(SDtime(i))]);
+%t1=title([META.data_type,' ',num2str(META.concentration),'% ice edge for ' datestr(SDtime(i))]);
 x1=xlabel('X (km)');
 y1=ylabel('Y (km)');
 set([gca t1 x1 y1],'fontsize',14,'fontname','helvetica','fontweight','demi');
-if data_type == 'AMSRE' | data_type=='AMSEB'
+if META.data_type == 'AMSRE' | META.data_type=='AMSEB'
 l1=legend(pmonth,'Apr','May','Jun','Jul','Aug','Sep','Oct');
 end
 print(fullfile(fig_dir,'monthly_iceedge.png'),'-dpng');
@@ -296,7 +289,8 @@ ylabel('PIE length (km)');
 %legend([p_sm,p_un],'smoothed','unsmoothed','location','northwest');
 
 %title([META.data_type,' (',num2str(META.year_stop-META.year_start+1),' years)']);
-text(220,5.5e4,[META.data_type,' (',year_start,'-',year_stop,')'],'fontsize',14);
+text(220,5.5e4,[META.data_type,' (',num2str(META.year_start),'-',num2str(META.year_stop),')'],'fontsize',14);
+text(220,5.0e4,[num2str(META.concentration),'% concentration'],'fontsize',14);
 set(gca,'fontsize',12,'fontname','helvetica','fontweight','demi');
 set(gca,'xlim',[100 350],'ylim',[0.e4 6.e4]);
 

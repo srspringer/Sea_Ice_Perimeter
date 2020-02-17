@@ -1,4 +1,4 @@
-function [ICEEDGE]=find_main_ice_edge(SDt,data_type,max_gap)
+function [ICEEDGE]=find_main_ice_edge(SDt,META,data_dir_root);
 
 % max_gap = 50; % size in km of biggest data gap in a single segment-
 % too big and you'll jump through islands
@@ -8,7 +8,7 @@ function [ICEEDGE]=find_main_ice_edge(SDt,data_type,max_gap)
 
 ICEEDGE.nsect=[]; ICEEDGE.x=[]; ICEEDGE.y=[]; 
 
-[S]=read_seaice('S',SDt,data_type);
+[S]=read_seaice('S',SDt,META.data_type,data_dir_root);
 if(isempty(S.seaice)); 
     disp(['No file for ' datestr(SDt)]);
     return; 
@@ -17,8 +17,7 @@ end
 %
 cice=S.seaice; cice(cice>100)=NaN;
 
-min_seaice_conc=15; % Sea ice concentration used for contouring
-min_seaice_conc=min_seaice_conc+.000001234; % make it an unusual number so we can find it in the contour array below
+min_seaice_conc=META.concentration+.000001234; % make it an unusual number so we can find it in the contour array below
 
 % plot sea ice contours
 figure(1); clf; 
@@ -70,7 +69,7 @@ if ~isempty(c)
 
             [ss tt] = min([dist1 dist2 dist3 dist4]);
 
-            if ss < max_gap
+            if ss < META.max_gap
                switch tt
                case 1 % new segment is to the left of existing, but needs to be reversed 
                   ICEEDGE.x = [fliplr(xx1) ICEEDGE.x];
@@ -104,7 +103,7 @@ for ipp = 1:size(POLYNYA)
    plot(POLYNYA(ipp).x,POLYNYA(ipp).y,'g');
 end
 title([datestr(SDt),'; nseg=',num2str((ICEEDGE.nsect))]);
-pause(0.01)
+pause(0.0001)
 
 end
 
